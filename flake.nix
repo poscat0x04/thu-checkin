@@ -13,6 +13,40 @@
         flakeIgnore = [ "E221" "E111" "E501" ];
       } (builtins.readFile ./thu-checkin.py);
     };
+    nixosModules.thu-checkin = { config, lib, pkgs, ... }: let
+      cfg = config.services.thu-checkin;
+      configEnv = { IS_INSCHOOL = "2"; } // cfg.config;
+      configFile = pkgs.writeText "thu-checkin.env" (lib.concatStrings (lib.mapAttrsToList (name: value: "${name}=${value}\n") configEnv));
+    in {
+      options.services.thu-checkin = {
+        enable = lib.mkEnableOption "THU checkin service";
+
+        config = with lib; with types; mkOption {
+          type = attrsOf str;
+          default = {};
+        };
+      };
+      config = lib.mkIf cfg.enable {
+        systemd = {
+          services.thu-checkin = {
+            after = [ "network-online.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              EnvironmentFile = [ configFile ];
+              ExecStart = "${pkgs.thu-checkin}";
+            };
+          };
+          timers.thu-checkin = {
+            wantedBy = [ "timers.target" ];
+            timerConfig = {
+              RandomizedDelaySec = "3h";
+              OnCalendar = "*-*-* 12:00:00 Asia/Shanghai";
+              Persistent = true;
+            };
+          };
+        };
+      };
+    };
   } // flake-utils.eachDefaultSystem (system: let
     pkgs = import nixpkgs { inherit system; overlays = [ self.overlay ]; };
   in {
