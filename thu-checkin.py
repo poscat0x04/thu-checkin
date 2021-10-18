@@ -7,6 +7,7 @@ import PIL
 import pytesseract
 import re
 import requests
+import sys
 
 # https://stackoverflow.com/a/35504626/5958455
 from urllib3.util.retry import Retry
@@ -15,18 +16,20 @@ from requests.adapters import HTTPAdapter
 
 print("Tsinghua University Daily Health Report")
 
-dirname = os.path.dirname(os.path.realpath(__file__))
-data = {}
-with open(os.path.join(dirname, "thu-checkin.txt"), "r") as f:
-    for line in f:
-        k, v = line.strip().split('=', 1)
-        data[k] = v
+RED   = "\033[1;31m"
+REVERSE = "\033[;7m"
 
-username = data["USERNAME"]
-password = data["PASSWORD"]
-juzhudi = data["JUZHUDI"]
-reason = data["REASON"]
-return_college = data["RETURN_COLLEGE"]
+try:
+  username = os.environ["USERNAME"]
+  password = os.environ["PASSWORD"]
+  juzhudi = os.environ['JUZHUDI']
+  reason = os.environ["REASON"]
+  return_college = os.environ["RETURN_COLLEGE"]
+except KeyError as err:
+  sys.stderr.write(RED)
+  sys.stderr.write("Environment variable {} was not set, exiting\n".format(err.args[0]))
+  sys.stderr.write(REVERSE)
+  exit(1)
 
 CAS_LOGIN_URL = "https://passport.ustc.edu.cn/login"
 CAS_CAPTCHA_URL = "https://passport.ustc.edu.cn/validatecode.jsp?type=login"

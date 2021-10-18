@@ -4,4 +4,5 @@ After=network.target network-online.target
 
 [Service]
 Type=oneshot
+EnvironmentFile=/root/thu-checkin.txt
 ExecStart=/usr/bin/python3 /root/thu-checkin.py
