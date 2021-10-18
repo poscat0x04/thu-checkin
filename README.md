@@ -59,10 +59,6 @@
 
 如果你有其他需求，例如打卡结果自动通知等，请自行修改 Python 程序实现。提示：仓库里的 Python 文件末尾已经有判断打卡成功的代码了。
 
-### Docker 方式
-
-请参考 [Dockerfile](Dockerfile) 和 [`run.sh`](run.sh) 自行配置。
-
 ## 许可
 
 本项目以 MIT 协议开源，详情请见 [LICENSE](LICENSE) 文件。
