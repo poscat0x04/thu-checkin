@@ -40,7 +40,7 @@
             wantedBy = [ "timers.target" ];
             timerConfig = {
               RandomizedDelaySec = "3h";
-              OnCalendar = "*-*-* 12:00:00 Asia/Shanghai";
+              OnCalendar = "*-*-* 12:00:00 CST";
               Persistent = true;
             };
           };
