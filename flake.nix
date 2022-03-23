@@ -15,7 +15,7 @@
     };
     nixosModules.thu-checkin = { config, lib, pkgs, ... }: let
       cfg = config.services.thu-checkin;
-      configEnv = { IS_INSCHOOL = "2"; } // cfg.config;
+      configEnv = cfg.config;
       configFile = pkgs.writeText "thu-checkin.env" (lib.concatStrings (lib.mapAttrsToList (name: value: "${name}=${value}\n") configEnv));
     in {
       options.services.thu-checkin = {
@@ -39,8 +39,8 @@
           timers.thu-checkin = {
             wantedBy = [ "timers.target" ];
             timerConfig = {
-              RandomizedDelaySec = "3h";
-              OnCalendar = "*-*-* 12:00:00 CST";
+              RandomizedDelaySec = "1m";
+              OnCalendar = "*-*-* 7:00:00 CST";
               Persistent = true;
             };
           };
